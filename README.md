@@ -29,13 +29,14 @@ Experiments on the FISCO BCOS blockchain show that FreeChain outperforms the sta
 ## Dependencies
 
 ### Core Components
-- **FreORE**: Frequency-resistant Order-Revealing Encryption (version 1.0.0)
-- **CVTree**: Cipher Verification Tree (version 1.0.0)
-- **BVTree**: Block Verification Tree (version 1.0.0)
+- **FreORE**: FreORE.py 
+- **CVTree**: cvtree.py
+- **BVTree**: bvtree.py
 
 ### Python Dependencies
 ```
 python==3.12.9
+pycryptodome=3.21.0
 hashlib
 hmac
 random
@@ -240,10 +241,6 @@ bvtree.insert(50, "file2.txt")
 results = bvtree.range_query(40, 60)  # Returns ["file1.txt", "file2.txt"]
 ```
 
-#### Running Benchmarks
-```bash
-python benchmarks.py
-```
 
 #### Deploying to FISCO BCOS
 ```bash
@@ -254,16 +251,6 @@ For more detailed examples and use cases, please refer to the `examples/` direct
 
 ---
 
-## Citation
-If you use FreeChain in your research, please cite our paper:
-```
-@inproceedings{freechain2023,
-  title={FreeChain: A Secure and Efficient Blockchain Database with Frequency-Resistant Order-Revealing Encryption},
-  author={[Author Names]},
-  booktitle={[Conference Name]},
-  year={2023}
-}
-```
 
 ## License
 This project is licensed under the MIT License - see the LICENSE file for details.
