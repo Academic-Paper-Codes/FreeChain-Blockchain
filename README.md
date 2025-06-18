@@ -1,245 +1,269 @@
-# FreeChain-FISCO-BCOS
+# FreeChain: A Secure and Efficient Blockchain Database with Frequency-Resistant Order-Revealing Encryption
 
-A FISCO-BCOS implementation of a secure blockchain database system that utilizes the FreORE (Frequency-resistant Order-Revealing Encryption) scheme for privacy-preserving data operations.
+FreeChain is the first blockchain database that simultaneously ensures strong data security, query verifiability, and practical efficiency. It natively supports various order-oriented queries (e.g., range queries) over order-revealing ciphertexts, resists frequency inference attacks, and enables users to verify the soundness and completeness of query results.
 
-## Introduction
+## Table of Contents
+- [Overview](#overview)
+- [Dependencies](#dependencies)
+- [Experimental Setup](#experimental-setup)
+- [Installation](#installation)
+- [Code Modules](#code-modules)
+- [Libraries Used](#libraries-used)
+- [Download and Running](#download-and-running)
 
-FreeChain-FISCO-BCOS is a blockchain-based secure database system that implements the FreORE encryption scheme on the FISCO-BCOS blockchain platform. FreeChain enables secure comparison operations on encrypted data while resisting frequency analysis attacks on the underlying plaintext values, making it ideal for privacy-preserving applications such as secure range queries, encrypted data sorting, and confidential data processing on blockchain.
+## Overview
 
-## Package Overview
+Blockchain databases have emerged as a promising decentralized storage paradigm. However, they face critical challenges in revealing order while ensuring data security, query verifiability, and practical efficiency. Existing secure order-revealing blockchain databases suffer from low throughput and high communication overhead due to interactive protocols. Although order-revealing encryption (ORE) offers non-interactive encryption and improved performance, it remains vulnerable to frequency inference attacks and lacks query verifiability.
 
-This package provides a complete implementation of the FreeChain system optimized for FISCO-BCOS blockchain. FreeChain utilizes the FreORE encryption scheme as a core component to enable secure and privacy-preserving data operations. The package includes Python interfaces and utility functions for deploying and interacting with the system on the blockchain.
+FreeChain presents:
+- **FreORE**: A frequency-resistant ORE scheme that generates order-revealing ciphertexts and resists frequency inference attacks
+- **CVTree**: An authenticated data structure inspired by Merkle and prefix trees, constructed from FreORE's bitwise ciphertexts
+- **BVTree**: A block-aligned authenticated data structure with a trade-off to CVTree between index storage and proof size
 
-### Key Features
+Experiments on the FISCO BCOS blockchain show that FreeChain outperforms the state-of-the-art by up to:
+- 80× in encryption speed
+- 27× in query speed
+- 21× in throughput
+- 4× in communication reduction
 
-- **Order-Revealing Encryption**: Enables comparison operations on encrypted data without revealing the actual values
-- **Frequency-Resistant**: Protects against frequency analysis attacks by introducing controlled randomness
-- **Efficient Blockchain Implementation**: Optimized for blockchain storage and performance
-- **Trapdoor Mechanism**: Supports secure range queries on encrypted data
-
-## Package Structure
-
-```
-FreeChain-FISCO-BCOS/
-├── Schemes/                   # Encryption scheme implementations
-│   ├── FreORE.py              # FreORE implementation
-│   ├── BlockOPE.py            # BlockOPE implementation
-│   ├── EncodeORE.py           # EncodeORE implementation
-│   └── HybridORE.py           # HybridORE implementation
-├── python/                    # Python implementation and interfaces
-│   └── blockchain_interface.py # Interface to FISCO-BCOS
-├── scripts/                   # Deployment and utility scripts
-│   ├── deploy.py              # Deployment script
-│   └── test.py                # Test script
-└── examples/                  # Example applications
-    └── secure_database.py     # Example of secure database application
-```
+## Dependencies
 
 ### Core Components
+- **FreORE**: Frequency-resistant Order-Revealing Encryption (version 1.0.0)
+- **CVTree**: Cipher Verification Tree (version 1.0.0)
+- **BVTree**: Block Verification Tree (version 1.0.0)
 
-#### Encryption Schemes
-
-FreeChain incorporates multiple encryption schemes, with FreORE being the primary component:
-
-##### FreORE Python Implementation (Schemes/FreORE.py)
-
-The core encryption class that implements the Frequency-resistant Order-Revealing Encryption scheme.
-
-##### Constructor Parameters
-
-- `d`: Base for the scientific notation representation
-- `alpha`: Coefficient for the first bit perturbation
-- `beta`: Coefficient for the rest bits perturbation
-- `gamma`: Range for random noise
-- `pfk`: Pseudo-random function key
-- `nx`: Bit length for the mantissa part
-- `ny`: Bit length for the exponent part
-
-##### Main Functions
-
-| Function | Description |
-|----------|-------------|
-| `data_encrypt(m)` | Encrypts an integer value into a ciphertext string |
-| `_compare(c1, c2)` | Internal function to compare two ciphertexts |
-| `trap_encrypt(m)` | Creates a trapdoor encryption for range queries |
-| `trap_compare(c_q, c_d)` | Compares a trapdoor ciphertext with a data ciphertext |
-| `data_compare(c1, c2)` | Compares two data ciphertexts, returns -1, 0, or 1 |
-| `sort_encrypted(ciphertexts)` | Sorts a list of ciphertexts based on their order |
-
-## Deployment Guide
-
-### Prerequisites
-
-- FISCO-BCOS blockchain platform (v2.0 or higher)
-- Python 3.13.2
-- Conda environment manager
-- FISCO-BCOS Python SDK
-
-### Environment Setup
-
-1. Install FISCO-BCOS following the [official documentation](https://fisco-bcos-documentation.readthedocs.io/en/latest/docs/installation.html)
-
-2. Create and activate the conda environment:
-   ```bash
-   conda env create -f env.yml
-   conda activate experiment
-   ```
-
-3. Install the FISCO-BCOS Python SDK:
-   ```bash
-   pip install client-sdk-python
-   ```
-
-### Deployment Steps
-
-1. Clone this repository:
-   ```bash
-   git clone https://github.com/yourusername/FreeChain-FISCO-BCOS.git
-   cd FreeChain-FISCO-BCOS
-   ```
-
-2. Configure your FISCO-BCOS connection:
-   ```bash
-   cp ./config-example.json ./config.json
-   # Edit config.json with your FISCO-BCOS node information
-   ```
-
-3. Run the deployment script:
-   ```bash
-   python scripts/deploy.py
-   ```
-
-4. Verify the deployment:
-   ```bash
-   python scripts/test.py
-   ```
-
-### Integration with Existing Applications
-
-To integrate the FreORE scheme with your existing FISCO-BCOS applications:
-
-1. Import the FreORE Python module:
-   ```python
-   from Schemes.FreORE import FreORE
-   ```
-
-2. Initialize the blockchain interface:
-   ```python
-   from python.blockchain_interface import BlockchainInterface
-   
-   # Connect to your FISCO-BCOS node
-   bc_interface = BlockchainInterface("config.json")
-   ```
-
-3. Use the FreORE scheme:
-   ```python
-   # Initialize FreORE
-   ore = FreORE(d=2, alpha=1000, beta=10, gamma=5, pfk=b"secret_key", nx=8, ny=8)
-   
-   # Encrypt data
-   plaintext = 42
-   ciphertext = ore.data_encrypt(plaintext)
-   
-   # Store on blockchain
-   tx_receipt = bc_interface.store_data(ciphertext)
-   ```
-
-## Technical Requirements
-
-### Dependencies
-
-The package requires the following main dependencies (see `env.yml` for complete list):
-
-- Python 3.13.2
-- pycryptodome 3.21.0 (for cryptographic operations)
-- numpy 2.2.5
-- client-sdk-python (FISCO-BCOS Python SDK)
-- matplotlib 3.10.0 (for visualization)
-- pytest 8.3.4 (for testing)
-- scikit-learn 1.6.1
-- scipy 1.15.3
-
-### FISCO-BCOS Version Compatibility
-
-- FISCO-BCOS v2.0+
-- FISCO-BCOS v3.0+ (recommended)
-
-## FISCO-BCOS Resources
-
-- [FISCO-BCOS GitHub Repository](https://github.com/FISCO-BCOS/FISCO-BCOS)
-- [Official Documentation](https://fisco-bcos-documentation.readthedocs.io/)
-- [Developer Documentation](https://fisco-bcos-documentation.readthedocs.io/en/latest/docs/developer/index.html)
-- [Python SDK](https://github.com/FISCO-BCOS/python-sdk)
-- [Console Manual](https://fisco-bcos-documentation.readthedocs.io/en/latest/docs/manual/console.html)
-- [Solidity Tutorial](https://fisco-bcos-documentation.readthedocs.io/en/latest/docs/developer/solidity.html)
-
-## Usage Examples
-
-### Python Client Example
-
-```python
-from Schemes.FreORE import FreORE
-from python.blockchain_interface import BlockchainInterface
-
-# Initialize the blockchain interface
-bc = BlockchainInterface("config.json")
-
-# Initialize the FreORE scheme
-ore = FreORE(d=2, alpha=1000, beta=10, gamma=5, pfk=b"secret_key", nx=8, ny=8)
-
-# Encrypt data
-plaintext = 42
-ciphertext = ore.data_encrypt(plaintext)
-print(f"Plaintext: {plaintext}")
-print(f"Ciphertext: {ciphertext}")
-
-# Store encrypted data on the blockchain
-tx_receipt = bc.store_data(ciphertext)
-print(f"Data stored on blockchain. Transaction hash: {tx_receipt['transactionHash'].hex()}")
-
-# Create a trapdoor for range query
-trapdoor = ore.trap_encrypt(plaintext)
-
-# Perform a range query
-low_value = 30
-high_value = 50
-low_trapdoor, high_trapdoor = ore.trap_encrypt(low_value), ore.trap_encrypt(high_value)
-query_results = bc.range_query(low_trapdoor, high_trapdoor)
-print(f"Range query results: {query_results}")
-
-# Compare two encrypted values
-p1, p2 = 40, 50
-c1, c2 = ore.data_encrypt(p1), ore.data_encrypt(p2)
-comparison_result = ore.data_compare(c1, c2)  # Returns -1 (c1 < c2)
-print(f"Comparison result: {comparison_result}")
-
-# Sort encrypted data
-plaintexts = [i for i in range(10)]
-ciphertexts = [ore.data_encrypt(p) for p in plaintexts]
-sorted_ciphertexts = ore.sort_encrypted(ciphertexts)
+### Python Dependencies
+```
+python==3.12.9
+hashlib
+hmac
+random
+functools
+dataclasses
+typing
+time
+math
 ```
 
-## Performance Considerations
+### Blockchain Platform
+```
+FISCO BCOS (version 2.9.0 or later)
+Solidity==0.4.25
+```
 
-When deploying the FreORE scheme on FISCO-BCOS, consider the following performance aspects:
+## Experimental Setup
 
-- **Computational Complexity**: The comparison operations are computationally intensive
-- **Storage Requirements**: Encrypted data requires more storage than plaintext
-- **Node Configuration**: Ensure your FISCO-BCOS nodes have sufficient resources
+Our experiments were performed on the following configuration:
 
-## Security Considerations
+- **Hardware**:
+  - 3 virtual machines with Intel Core i7-12700F CPU @ 2.10GHz
+  - 32GB RAM on host machines
+  - Each VM using 2 host cores and 4GB RAM
 
-- **Key Management**: Securely manage encryption keys off-chain
-- **Access Control**: Implement proper access control mechanisms
-- **Audit**: Regular security audits are recommended
-- **Privacy Leakage**: While FreORE resists frequency analysis, it still reveals order relationships
+- **Software**:
+  - Operating System: Ubuntu 22.04
+  - Python 3.12.9
+  - Solidity 0.4.25
+  - FISCO BCOS blockchain platform
+
+## Installation
+
+### Prerequisites
+- Ubuntu 22.04 (or compatible Linux distribution)
+- Python 3.12.9
+- Git
+
+### Step 1: Clone the Repository
+```bash
+git clone https://github.com/your-username/freechain.git
+cd freechain
+```
+
+### Step 2: Install Python Dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### Step 3: Set Up FISCO BCOS
+FISCO BCOS is an open-source enterprise-level financial blockchain platform. Follow these steps to set it up:
+
+1. Download the FISCO BCOS build tool:
+```bash
+curl -LO https://github.com/FISCO-BCOS/FISCO-BCOS/releases/download/v2.9.0/build_chain.sh
+chmod +x build_chain.sh
+```
+
+2. Build a 3-node blockchain network:
+```bash
+./build_chain.sh -l "127.0.0.1:4" -p 30300,20200,8545
+```
+
+3. Start the blockchain network:
+```bash
+cd nodes/127.0.0.1
+./start_all.sh
+```
+
+4. Check if the nodes are running:
+```bash
+ps -ef | grep fisco-bcos
+```
+
+For more detailed instructions on FISCO BCOS setup, please refer to the [official documentation](https://fisco-bcos-documentation.readthedocs.io/en/latest/docs/installation.html).
+
+### Step 4: Deploy Smart Contracts
+```bash
+python deploy_contracts.py
+```
+
+## Code Modules
+
+### FreORE.py
+The core implementation of the Frequency-resistant Order-Revealing Encryption scheme.
+
+#### Key Functions:
+- `__init__(d, alpha, beta, gamma, pfk, nx, ny)`: Initialize FreORE with parameters
+- `data_encrypt(m)`: Encrypt integer m to ciphertext
+- `trap_encrypt(m)`: Generate trapdoor for query
+- `data_compare(c1, c2)`: Compare two ciphertexts
+- `trap_compare(c_q, c_d)`: Compare trapdoor with ciphertext
+- `sort_encrypted(ciphertexts)`: Sort encrypted values
+
+### CVTree.py
+Implementation of the Cipher Verification Tree, an authenticated data structure for efficient query verification.
+
+#### Key Functions:
+- `__init__(freore_instance)`: Initialize CVTree with FreORE instance
+- `insert(plaintext, file_address)`: Insert data into the tree
+- `range_query(low_plaintext, high_plaintext)`: Perform range query
+- `generate_proof(plaintext)`: Generate verification proof
+- `verify_proof(proof, root_hash)`: Verify a proof against root hash
+- `compute_hashes()`: Compute all node hashes and return storage cost
+
+### BVTree.py
+Implementation of the Block Verification Tree, optimized for blockchain storage.
+
+#### Key Functions:
+- `__init__(freore_instance, block_size)`: Initialize BVTree with parameters
+- `insert(plaintext, file_address)`: Insert data into blocks
+- `range_query(low_plaintext, high_plaintext)`: Perform range query
+- `generate_proof(plaintext)`: Generate verification proof
+- `verify_proof(proof)`: Verify a proof
+- `compute_merkle_roots()`: Compute Merkle roots for all blocks
+
+## Libraries Used
+
+### Cryptographic Functions
+- **hashlib**: For SHA-256 hashing operations
+- **hmac**: For HMAC-based message authentication
+- **random**: For generating random values in FreORE
+
+### Data Structures
+- **dataclasses**: For defining structured data classes
+- **typing**: For type annotations
+- **functools**: For functional programming utilities (cmp_to_key)
+
+### Performance Measurement
+- **time**: For measuring execution times
+- **math**: For mathematical operations
+
+## Download and Running
+
+### Download
+```bash
+git clone https://github.com/your-username/freechain.git
+cd freechain
+```
+
+### Configuration
+Edit the `config.py` file to set your parameters:
+```python
+# FreORE parameters
+FREORE_PARAMS = {
+    'd': 2,
+    'alpha': 1000,
+    'beta': 10,
+    'gamma': 5,
+    'pfk': b"your_secret_key",
+    'nx': 8,
+    'ny': 8
+}
+
+# BVTree parameters
+BVTREE_BLOCK_SIZE = 1000
+
+# FISCO BCOS connection
+FISCO_BCOS_CONFIG = {
+    'channel_host': '127.0.0.1',
+    'channel_port': 20200,
+    'contract_address': 'your_deployed_contract_address'
+}
+```
+
+### Running Examples
+
+#### Basic Usage Example
+```python
+from FreORE import FreORE
+from cvtree import CVTree
+from bvtree import BVTree
+
+# Initialize FreORE
+ore = FreORE(d=2, alpha=1000, beta=10, gamma=5, pfk=b"secret_key", nx=8, ny=8)
+
+# Encrypt values
+c1 = ore.data_encrypt(42)
+c2 = ore.data_encrypt(50)
+
+# Compare encrypted values
+result = ore.data_compare(c1, c2)  # Returns -1 (42 < 50)
+
+# Initialize CVTree
+cvtree = CVTree(ore)
+
+# Insert data
+cvtree.insert(42, "file1.txt")
+cvtree.insert(50, "file2.txt")
+
+# Perform range query
+results = cvtree.range_query(40, 60)  # Returns ["file1.txt", "file2.txt"]
+
+# Initialize BVTree
+bvtree = BVTree(ore, block_size=1000)
+
+# Insert data
+bvtree.insert(42, "file1.txt")
+bvtree.insert(50, "file2.txt")
+
+# Perform range query
+results = bvtree.range_query(40, 60)  # Returns ["file1.txt", "file2.txt"]
+```
+
+#### Running Benchmarks
+```bash
+python benchmarks.py
+```
+
+#### Deploying to FISCO BCOS
+```bash
+python deploy_to_blockchain.py
+```
+
+For more detailed examples and use cases, please refer to the `examples/` directory in the repository.
+
+---
+
+## Citation
+If you use FreeChain in your research, please cite our paper:
+```
+@inproceedings{freechain2023,
+  title={FreeChain: A Secure and Efficient Blockchain Database with Frequency-Resistant Order-Revealing Encryption},
+  author={[Author Names]},
+  booktitle={[Conference Name]},
+  year={2023}
+}
+```
 
 ## License
-
-This project is licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
-
-## Contact and Support
-
-For questions, issues, or contributions, please contact:
-- GitHub Issues: [Create an issue](https://github.com/yourusername/FreeChain-FISCO-BCOS/issues)
-- Email: your.email@example.com
+This project is licensed under the MIT License - see the LICENSE file for details.
