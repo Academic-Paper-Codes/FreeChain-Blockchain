@@ -1,14 +1,14 @@
-# FreORE-FISCO-BCOS
+# FreeChain-FISCO-BCOS
 
-A FISCO-BCOS implementation of the FreORE (Frequency-resistant Order-Revealing Encryption) scheme for secure and privacy-preserving data operations on blockchain.
+A FISCO-BCOS implementation of a secure blockchain database system that utilizes the FreORE (Frequency-resistant Order-Revealing Encryption) scheme for privacy-preserving data operations.
 
 ## Introduction
 
-FreORE-FISCO-BCOS is a package that implements the FreORE encryption scheme for the FISCO-BCOS blockchain platform. This package enables secure comparison operations on encrypted data while resisting frequency analysis attacks on the underlying plaintext values, making it ideal for privacy-preserving applications such as secure range queries, encrypted data sorting, and confidential data processing on blockchain.
+FreeChain-FISCO-BCOS is a blockchain-based secure database system that implements the FreORE encryption scheme on the FISCO-BCOS blockchain platform. FreeChain enables secure comparison operations on encrypted data while resisting frequency analysis attacks on the underlying plaintext values, making it ideal for privacy-preserving applications such as secure range queries, encrypted data sorting, and confidential data processing on blockchain.
 
 ## Package Overview
 
-This package provides a complete implementation of the FreORE encryption scheme optimized for FISCO-BCOS blockchain. It includes Python interfaces and utility functions for deploying and interacting with the encryption scheme on the blockchain.
+This package provides a complete implementation of the FreeChain system optimized for FISCO-BCOS blockchain. FreeChain utilizes the FreORE encryption scheme as a core component to enable secure and privacy-preserving data operations. The package includes Python interfaces and utility functions for deploying and interacting with the system on the blockchain.
 
 ### Key Features
 
@@ -20,9 +20,13 @@ This package provides a complete implementation of the FreORE encryption scheme 
 ## Package Structure
 
 ```
-FreORE-FISCO-BCOS/
+FreeChain-FISCO-BCOS/
+├── Schemes/                   # Encryption scheme implementations
+│   ├── FreORE.py              # FreORE implementation
+│   ├── BlockOPE.py            # BlockOPE implementation
+│   ├── EncodeORE.py           # EncodeORE implementation
+│   └── HybridORE.py           # HybridORE implementation
 ├── python/                    # Python implementation and interfaces
-│   ├── freore.py              # FreORE implementation
 │   └── blockchain_interface.py # Interface to FISCO-BCOS
 ├── scripts/                   # Deployment and utility scripts
 │   ├── deploy.py              # Deployment script
@@ -33,9 +37,13 @@ FreORE-FISCO-BCOS/
 
 ### Core Components
 
-#### FreORE Python Implementation (Schemes/FreORE.py)
+#### Encryption Schemes
 
-The core encryption class that implements the FreORE scheme.
+FreeChain incorporates multiple encryption schemes, with FreORE being the primary component:
+
+##### FreORE Python Implementation (Schemes/FreORE.py)
+
+The core encryption class that implements the Frequency-resistant Order-Revealing Encryption scheme.
 
 ##### Constructor Parameters
 
@@ -86,8 +94,8 @@ The core encryption class that implements the FreORE scheme.
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/yourusername/FreORE-FISCO-BCOS.git
-   cd FreORE-FISCO-BCOS
+   git clone https://github.com/yourusername/FreeChain-FISCO-BCOS.git
+   cd FreeChain-FISCO-BCOS
    ```
 
 2. Configure your FISCO-BCOS connection:
@@ -112,7 +120,7 @@ To integrate the FreORE scheme with your existing FISCO-BCOS applications:
 
 1. Import the FreORE Python module:
    ```python
-   from python.freore import FreORE
+   from Schemes.FreORE import FreORE
    ```
 
 2. Initialize the blockchain interface:
@@ -163,7 +171,6 @@ The package requires the following main dependencies (see `env.yml` for complete
 - [Developer Documentation](https://fisco-bcos-documentation.readthedocs.io/en/latest/docs/developer/index.html)
 - [Python SDK](https://github.com/FISCO-BCOS/python-sdk)
 - [Console Manual](https://fisco-bcos-documentation.readthedocs.io/en/latest/docs/manual/console.html)
-- [Smart Contract Development](https://fisco-bcos-documentation.readthedocs.io/en/latest/docs/developer/smart_contract.html)
 - [Solidity Tutorial](https://fisco-bcos-documentation.readthedocs.io/en/latest/docs/developer/solidity.html)
 
 ## Usage Examples
@@ -171,7 +178,7 @@ The package requires the following main dependencies (see `env.yml` for complete
 ### Python Client Example
 
 ```python
-from python.freore import FreORE
+from Schemes.FreORE import FreORE
 from python.blockchain_interface import BlockchainInterface
 
 # Initialize the blockchain interface
@@ -235,5 +242,5 @@ This project is licensed under the [Apache License 2.0](https://www.apache.org/l
 ## Contact and Support
 
 For questions, issues, or contributions, please contact:
-- GitHub Issues: [Create an issue](https://github.com/yourusername/FreORE-FISCO-BCOS/issues)
+- GitHub Issues: [Create an issue](https://github.com/yourusername/FreeChain-FISCO-BCOS/issues)
 - Email: your.email@example.com
