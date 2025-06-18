@@ -225,7 +225,6 @@ When deploying the FreORE scheme on FISCO-BCOS, consider the following performan
 
 - **Computational Complexity**: The comparison operations are computationally intensive
 - **Storage Requirements**: Encrypted data requires more storage than plaintext
-- **Batch Processing**: Use batch operations for better throughput
 - **Node Configuration**: Ensure your FISCO-BCOS nodes have sufficient resources
 
 ## Security Considerations
