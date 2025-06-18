@@ -1,31 +1,26 @@
 # FreORE-FISCO-BCOS
 
-A FISCO-BCOS smart contract package implementing the FreORE (Frequency-hiding Order-Revealing Encryption) scheme for secure and privacy-preserving data operations on blockchain.
+A FISCO-BCOS implementation of the FreORE (Frequency-resistant Order-Revealing Encryption) scheme for secure and privacy-preserving data operations on blockchain.
 
 ## Introduction
 
-FreORE-FISCO-BCOS is a smart contract package that implements the FreORE encryption scheme for the FISCO-BCOS blockchain platform. This package enables secure comparison operations on encrypted data while hiding the frequency information of the underlying plaintext values, making it ideal for privacy-preserving applications such as secure range queries, encrypted data sorting, and confidential data processing on blockchain.
+FreORE-FISCO-BCOS is a package that implements the FreORE encryption scheme for the FISCO-BCOS blockchain platform. This package enables secure comparison operations on encrypted data while resisting frequency analysis attacks on the underlying plaintext values, making it ideal for privacy-preserving applications such as secure range queries, encrypted data sorting, and confidential data processing on blockchain.
 
 ## Package Overview
 
-This package provides a complete implementation of the FreORE encryption scheme optimized for FISCO-BCOS blockchain. It includes smart contracts, Python interfaces, and utility functions for deploying and interacting with the encryption scheme on the blockchain.
+This package provides a complete implementation of the FreORE encryption scheme optimized for FISCO-BCOS blockchain. It includes Python interfaces and utility functions for deploying and interacting with the encryption scheme on the blockchain.
 
 ### Key Features
 
 - **Order-Revealing Encryption**: Enables comparison operations on encrypted data without revealing the actual values
-- **Frequency-Hiding**: Protects against frequency analysis attacks by introducing controlled randomness
-- **Efficient Blockchain Implementation**: Optimized for gas efficiency and blockchain storage
+- **Frequency-Resistant**: Protects against frequency analysis attacks by introducing controlled randomness
+- **Efficient Blockchain Implementation**: Optimized for blockchain storage and performance
 - **Trapdoor Mechanism**: Supports secure range queries on encrypted data
-- **Smart Contract Integration**: Ready-to-deploy contracts for FISCO-BCOS
 
 ## Package Structure
 
 ```
 FreORE-FISCO-BCOS/
-├── contracts/                 # Solidity smart contracts
-│   ├── FreOREStorage.sol      # Contract for storing encrypted data
-│   ├── FreORECompare.sol      # Contract for comparison operations
-│   └── FreOREQuery.sol        # Contract for query operations
 ├── python/                    # Python implementation and interfaces
 │   ├── freore.py              # FreORE implementation
 │   └── blockchain_interface.py # Interface to FISCO-BCOS
@@ -63,15 +58,6 @@ The core encryption class that implements the FreORE scheme.
 | `data_compare(c1, c2)` | Compares two data ciphertexts, returns -1, 0, or 1 |
 | `sort_encrypted(ciphertexts)` | Sorts a list of ciphertexts based on their order |
 
-#### Smart Contract Functions
-
-| Contract | Function | Description |
-|----------|----------|-------------|
-| FreOREStorage | `storeData(bytes ciphertext)` | Stores encrypted data on the blockchain |
-| FreOREStorage | `getData(uint256 id)` | Retrieves encrypted data by ID |
-| FreORECompare | `compare(bytes c1, bytes c2)` | Compares two ciphertexts on-chain |
-| FreOREQuery | `rangeQuery(bytes low, bytes high)` | Performs a range query using trapdoor encryption |
-
 ## Deployment Guide
 
 ### Prerequisites
@@ -80,7 +66,6 @@ The core encryption class that implements the FreORE scheme.
 - Python 3.13.2
 - Conda environment manager
 - FISCO-BCOS Python SDK
-- FISCO-BCOS Console
 
 ### Environment Setup
 
@@ -111,7 +96,7 @@ The core encryption class that implements the FreORE scheme.
    # Edit config.json with your FISCO-BCOS node information
    ```
 
-3. Deploy the smart contracts:
+3. Run the deployment script:
    ```bash
    python scripts/deploy.py
    ```
@@ -138,17 +123,16 @@ To integrate the FreORE scheme with your existing FISCO-BCOS applications:
    bc_interface = BlockchainInterface("config.json")
    ```
 
-3. Deploy and interact with the contracts:
+3. Use the FreORE scheme:
    ```python
-   # Deploy contracts
-   contract_addresses = bc_interface.deploy_contracts()
-   
-   # Use the FreORE scheme
+   # Initialize FreORE
    ore = FreORE(d=2, alpha=1000, beta=10, gamma=5, pfk=b"secret_key", nx=8, ny=8)
    
-   # Store encrypted data on the blockchain
+   # Encrypt data
    plaintext = 42
    ciphertext = ore.data_encrypt(plaintext)
+   
+   # Store on blockchain
    tx_receipt = bc_interface.store_data(ciphertext)
    ```
 
@@ -171,7 +155,6 @@ The package requires the following main dependencies (see `env.yml` for complete
 
 - FISCO-BCOS v2.0+
 - FISCO-BCOS v3.0+ (recommended)
-- WeBASE 1.5.0+ (for web management interface)
 
 ## FISCO-BCOS Resources
 
@@ -197,79 +180,53 @@ bc = BlockchainInterface("config.json")
 # Initialize the FreORE scheme
 ore = FreORE(d=2, alpha=1000, beta=10, gamma=5, pfk=b"secret_key", nx=8, ny=8)
 
-# Encrypt and store data on the blockchain
+# Encrypt data
 plaintext = 42
 ciphertext = ore.data_encrypt(plaintext)
+print(f"Plaintext: {plaintext}")
+print(f"Ciphertext: {ciphertext}")
+
+# Store encrypted data on the blockchain
 tx_receipt = bc.store_data(ciphertext)
 print(f"Data stored on blockchain. Transaction hash: {tx_receipt['transactionHash'].hex()}")
 
 # Create a trapdoor for range query
 trapdoor = ore.trap_encrypt(plaintext)
 
-# Perform a range query on the blockchain
+# Perform a range query
 low_value = 30
 high_value = 50
 low_trapdoor, high_trapdoor = ore.trap_encrypt(low_value), ore.trap_encrypt(high_value)
 query_results = bc.range_query(low_trapdoor, high_trapdoor)
 print(f"Range query results: {query_results}")
 
-# Compare two encrypted values on the blockchain
+# Compare two encrypted values
 p1, p2 = 40, 50
 c1, c2 = ore.data_encrypt(p1), ore.data_encrypt(p2)
-comparison_result = bc.compare(c1, c2)  # Returns -1 (c1 < c2)
+comparison_result = ore.data_compare(c1, c2)  # Returns -1 (c1 < c2)
 print(f"Comparison result: {comparison_result}")
-```
 
-### Console Example
-
-```bash
-# Deploy the contracts
-./console.sh deploy FreOREStorage.sol
-
-# Get the contract address
-./console.sh getDeployLog
-
-# Call the store function
-./console.sh call FreOREStorage 0x1234...5678 storeData "0x123456789abcdef"
-
-# Call the compare function
-./console.sh call FreORECompare 0x1234...5678 compare "0x123456789abcdef" "0x987654321fedcba"
-```
-
-### Web3j Example
-
-```java
-// Load the contract
-FreOREStorage storage = FreOREStorage.load(
-    "0x1234...5678",
-    web3j,
-    credentials,
-    new StaticGasProvider(gasPrice, gasLimit)
-);
-
-// Store data
-TransactionReceipt receipt = storage.storeData("0x123456789abcdef").send();
-
-// Get data
-Tuple2<Boolean, String> result = storage.getData(BigInteger.valueOf(1)).send();
-String ciphertext = result.getValue2();
+# Sort encrypted data
+plaintexts = [i for i in range(10)]
+ciphertexts = [ore.data_encrypt(p) for p in plaintexts]
+sorted_ciphertexts = ore.sort_encrypted(ciphertexts)
 ```
 
 ## Performance Considerations
 
 When deploying the FreORE scheme on FISCO-BCOS, consider the following performance aspects:
 
-- **Gas Consumption**: The comparison operations are computationally intensive and may consume significant gas
-- **Storage Optimization**: Encrypted data requires more storage than plaintext
+- **Computational Complexity**: The comparison operations are computationally intensive
+- **Storage Requirements**: Encrypted data requires more storage than plaintext
 - **Batch Processing**: Use batch operations for better throughput
 - **Node Configuration**: Ensure your FISCO-BCOS nodes have sufficient resources
 
 ## Security Considerations
 
 - **Key Management**: Securely manage encryption keys off-chain
-- **Access Control**: Implement proper access control for the smart contracts
+- **Access Control**: Implement proper access control mechanisms
 - **Audit**: Regular security audits are recommended
-- **Privacy Leakage**: While FreORE hides data values and frequency, it reveals order relationships
+- **Privacy Leakage**: While FreORE resists frequency analysis, it still reveals order relationships
 
 ## License
 
